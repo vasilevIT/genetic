@@ -1,4 +1,0 @@
-function result = initPopulation(n, size_chromosome)
-for i = 1:n
-    result[i] = chromosomeEncode(abs(rand() * 10)120)
-end
