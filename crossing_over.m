@@ -15,9 +15,6 @@ function chromosome = crossing_over(parent1, parent2, type)
     if (strcmp(type, 'universal'))
         chromosome = crossing_over_universal(parent1, parent2);
     end
-    if (strcmp(type, 'greed'))
-        chromosome = crossing_over_greed(parent1, parent2);
-    end
     
     chromosome = mutation(chromosome);
     
