@@ -5,7 +5,6 @@ function [ chromosome ] = crossing_over_simple_point( parent1, parent2 )
     n = size(parent1, 2);
     index = randi([1,n-2]);
     chromosome = [parent1(1:index) , parent2(index+1:n)];
-    chromosome = mutation(chromosome);
 
 end
 
