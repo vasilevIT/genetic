@@ -16,6 +16,6 @@ function chromosome = crossing_over(parent1, parent2, type)
         chromosome = crossing_over_universal(parent1, parent2);
     end
     
-    chromosome = mutation(chromosome);
+    chromosome = mutation(chromosome, 'multiple_point');
     
 end

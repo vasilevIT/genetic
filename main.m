@@ -1,12 +1,12 @@
 clc
 clear all
-population_size = 100;
-chromosome_size = 120;
+population_size = 50;
+chromosome_size = 240;
 chromosome_min_value = 0;
 chromosome_max_value = 79;
 f1 = '0.2 * (u1 - 70)^2 + 0.8 * (u2-20)^2';
 f2 = '0.2 * (u1 - 10)^2 + 0.8 * (u2-70)^2';
-epoch = 2;
+epoch = 30;
 population = initPopulation(population_size, chromosome_size);
 epoch_index = 1;
 trand = zeros(epoch, 2);
@@ -30,16 +30,7 @@ while(true)
     plot(f_results(:,1), f_results(:,2), '.')
     %}
     % calc fit index
-    b = zeros(1,population_size);
-    fit_index = zeros(1,population_size);
-    for i = 1:population_size
-        for j = 1:population_size
-            if ((i~=j) && ((f_results(i,1) > f_results(j,1)) && (f_results(i,2) > f_results(j,2))))
-                b(i) = b(i) + 1;
-            end
-        end
-        fit_index(i) = 1/ (1 + (b(i)/ (population_size - 1)))^1;
-    end
+    fit_index = get_pareto(f_results);
     S = sum(fit_index);
     k = population_size;
     rn = randn(1,k);
@@ -66,20 +57,8 @@ while(true)
         chromosome = population(k,:);
         parents(i, :) = chromosome;
     end
-    trand = [];
-    z = 1;
-    for i = 1:population_size
-        k = 0;
-        if (b(i) == 0)
-              trand(z,:) = f_results(i,:)';
-              z = z + 1;
-        end
-    end
     if ((epoch_index == 1) || (epoch_index==epoch))
-         hold all
-         trand = sortrows(trand);
-         plot(trand(:, 1),trand(:, 2), 'DisplayName', sprintf('pareto #%d', epoch_index));
-          legend('-DynamicLegend');
+         plot_pareto(f_results, fit_index,epoch_index);
     end
 %      legend(sprintf('pareto #%d', epoch_index));
 %     break
@@ -89,7 +68,7 @@ while(true)
     for i = 1:population_size
         parent1 = parents(randi([1,size(parents,1)]), :);
         parent2 = parents(randi([1,size(parents,1)]), :);
-        chromosome = crossing_over(parent1, parent2);
+        chromosome = crossing_over(parent1, parent2, 'multiple_point');
         childs(i, :) = chromosome;
     end
 
