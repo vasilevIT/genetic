@@ -1,11 +1,11 @@
-function [] = plot_pareto( f_results, pareto, epoch_number )
-%PLOT_PARETO Summary of this function goes here
+function [ output_args ] = plot_nash( f_results, pareto, epoch_number )
+%PLOT_NASH Summary of this function goes here
 %   Detailed explanation goes here
     N = size(f_results, 1);
     figure
-    title(sprintf('pareto #%d', epoch_number));
+    title(sprintf('nash #%d', epoch_number));
     for i = 1:N
-        if (pareto(i) == 1)
+        if (pareto(i) >= 0.9)
             hold on
             plot(f_results(i, 1),f_results(i, 2), 'o','color', 'g');
         elseif (pareto(i) > 0.8) 
@@ -21,4 +21,3 @@ function [] = plot_pareto( f_results, pareto, epoch_number )
     end
 
 end
-
