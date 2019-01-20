@@ -1,7 +1,7 @@
 function [] = plot_pareto( f_results, pareto, epoch_number )
 %PLOT_PARETO Summary of this function goes here
 %   Detailed explanation goes here
-
+    f_results
     N = size(f_results, 1);
     figure
     title(sprintf('pareto #%d', epoch_number));
