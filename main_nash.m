@@ -9,6 +9,7 @@ population_size = 50;
 chromosome_size = 64;
 chromosome_min_value = 0;
 chromosome_max_value = 79;
+stop_condition = 0.9;
 f1 = '0.2 * (u1 - 70)^2 + 0.8 * (u2-20)^2';
 f2 = '0.2 * (u1 - 10)^2 + 0.8 * (u2-70)^2';
 f1 = inline(f1);
@@ -70,7 +71,7 @@ while(true)
         parents(i, :) = chromosome;
     end
     timer_end('Form parent list')
-    if ((epoch_index == 1) || (epoch_index >= max_epoch) || accuracy > 0.9)
+    if ((epoch_index == 1) || (epoch_index >= max_epoch) || accuracy > stop_condition)
          plot_nash(f_results, fit_index,epoch_index);
     end
 
@@ -89,7 +90,7 @@ while(true)
     populations = [populations, population];
 %     get new function value fromm childs
 
-    if (epoch_index == 1 || epoch_index >= max_epoch || accuracy > 0.9)
+    if (epoch_index == 1 || epoch_index >= max_epoch || accuracy > stop_condition)
         f_results_childs = zeros(population_size, 2);
         for i = 1:population_size
             z = population(i,:);
@@ -111,7 +112,7 @@ while(true)
        % disp(min(f_results_childs))
     end
     % check end cycle
-    if ((epoch_index >= max_epoch) || (accuracy > 0.9))
+    if ((epoch_index >= max_epoch) || (accuracy > stop_condition))
        % disp(min(f_results))
         %disp(min(f_results_childs))
         break;
