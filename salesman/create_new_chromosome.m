@@ -38,7 +38,7 @@ function [ chromosome ] = create_new_chromosome(i, population, inc_matrix)
             k = k + 1;
         end
         chromosome_item = population(pop_index, chrom_r_index);
-        disp(chromosome_item);
+%         disp(chromosome_item);
         disp(find(chromosome == chromosome_item, 1));
         if (size(find(chromosome == chromosome_item, 1),2) == 1)
             disp('error');
@@ -54,39 +54,15 @@ function [ chromosome ] = create_new_chromosome(i, population, inc_matrix)
 %         fprintf('added chromosome %d', chrom_l);
     end
     
-    return
-    %{
-    chrom_r = population(i,index + 1);
-    temp_dists(1) = inc_matrix(chrom_l, chrom_r);
-   
-    for i = 2:population_size
-        chrom_l_index = find(population(i,:) == chrom_l, 1);
-        chrom_r_index = chrom_l_index + 1;
-        inc_i1 = population(i,chrom_l_index);
-        inc_i2 = population(i,chrom_r_index);
-        temp_dists(i) = inc_matrix(inc_i1, inc_i2);
+%     Make mutation
+    rn = rand(1);
+    if (rn > 0.98)
+        rni = randperm(N, 2);
+        temp = chromosome(rni(1));
+        chromosome(rni(1)) = chromosome(rni(2));
+        chromosome(rni(2)) = temp;
+        fprintf('\nMutation\n');
     end
-    [C, min_index] = min(temp_dists);
-    chrom_l_index = find(population(min_index,:) == chrom_l, 1);
-    chrom_r_index = chrom_l_index + 1;
-    chromosome(1) = population(min_index, chrom_l_index); 
-    chromosome(2) = population(min_index, chrom_r_index);
-%     next pass
-    temp_dists2 = [];
-    chrom_l = chromosome(2);
-    chrom_r = population(min_index, chrom_r_index + 1);
-    temp_dists(min_index) = inc_matrix(chrom_l, chrom_r);
-    for i = 1:population_size
-        chrom_l_index = find(population(i,:) == chrom_l, 1);
-        chrom_r_index = chrom_l_index + 1;
-        inc_i1 = population(i,chrom_l_index);
-        inc_i2 = population(i,chrom_r_index);
-        temp_dists2(i) = inc_matrix(inc_i1, inc_i2);
-    end
-    [C, min_index] = min(temp_dists);
-    chrom_l_index = find(population(min_index,:) == chrom_l, 1);
-    chrom_r_index = chrom_l_index + 1;
-    chromosome(3) = population(min_index, chrom_r_index);
-%}
+    
 end
 

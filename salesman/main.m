@@ -3,16 +3,17 @@ clear all
 
 % Init params
 chromosome_size = 64;
-N = 26; % Quantity points
-max_epoch = 5;
-population_size = 100;
+N = 50; % Quantity points
+max_epoch = 50;
+population_size = 15;
+results = [];
 
 % Gen circle
 circle_center = 10;
 circle_r = 5;
 points = zeros(N+1, 3);
 
-t = [0:pi/(N)*2:2*pi]; % ??? ???? 
+t = [0:pi/(N)*2:2*pi];
 points(:, 1) = circle_r * cos(t) + circle_center; 
 points(:, 2) = circle_r * sin(t) + circle_center; 
 figure
@@ -22,8 +23,8 @@ plot(points(:, 1), points(:, 2), 'o');
 
 i = 1;
 alpabet = [];
-for c = int8('A'):int8('Z')
-    alpabet(i) = char(c);
+for c = 1:150
+    alpabet(i) = c;
     i = i + 1;
 end
 for i = 1:N
@@ -72,7 +73,7 @@ y(i) = points(population(1,i),2);
 end
 plot(x,y);
 
-evaluate_population(population, inc_matrix, points);
+results(1) = evaluate_population(population, inc_matrix, points);
 
 
 % Fit
@@ -84,7 +85,11 @@ for k = 1:max_epoch
         new_population(i, :) = new_chromosome;
         
     end
-    evaluate_population(new_population, inc_matrix, points);
+    results(k+1) = evaluate_population(new_population, inc_matrix, points);
     population = new_population;
 %     break;
 end
+
+figure
+title('Fit summary')
+plot(results)

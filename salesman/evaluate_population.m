@@ -1,4 +1,4 @@
-function [ ] = evaluate_population( population, inc_matrix, points )
+function [ min_dist ] = evaluate_population( population, inc_matrix, points )
 %EVALUATE_POPULATION Summary of this function goes here
 %   Detailed explanation goes here
     N = size(population, 2);
@@ -14,12 +14,15 @@ function [ ] = evaluate_population( population, inc_matrix, points )
     end
     [C,best_i] = min(dists);
     fprintf('Min lenfth %f of %d item\n', C, best_i);
+    min_dist = C;
     % plot best path
     x = [];
     y = [];
     % first point
     figure
     title(sprintf('Graph min length %f', C));
+    hold on
+    plot(points(:, 1), points(:, 2), 'o'); 
     hold on 
     plot(points(population(best_i,1),1), points(population(best_i,1),2), 'o', 'color', 'g');
     dist = 0;
