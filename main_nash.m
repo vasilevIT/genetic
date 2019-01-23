@@ -119,3 +119,4 @@ while(true)
     end
     epoch_index = epoch_index + 1;
 end
+disp(f_vars);

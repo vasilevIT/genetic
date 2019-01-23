@@ -1,4 +1,4 @@
-function [ min_dist ] = evaluate_population( population, inc_matrix, points )
+function [ min_dist ] = evaluate_population( population, inc_matrix, points, epoch )
 %EVALUATE_POPULATION Summary of this function goes here
 %   Detailed explanation goes here
     N = size(population, 2);
@@ -19,18 +19,20 @@ function [ min_dist ] = evaluate_population( population, inc_matrix, points )
     x = [];
     y = [];
     % first point
-    figure
-    title(sprintf('Graph min length %f', C));
-    hold on
-    plot(points(:, 1), points(:, 2), 'o'); 
-    hold on 
-    plot(points(population(best_i,1),1), points(population(best_i,1),2), 'o', 'color', 'g');
-    dist = 0;
-    for i = 1:N
-    hold on
-    x(i) = points(population(best_i,i),1);
-    y(i) = points(population(best_i,i),2);
+    if (mod(epoch, 5) == 0)
+        figure
+        title(sprintf('Graph min length %f', C));
+        hold on
+        plot(points(:, 1), points(:, 2), 'o'); 
+        hold on 
+        plot(points(population(best_i,1),1), points(population(best_i,1),2), 'o', 'color', 'g');
+        dist = 0;
+        for i = 1:N
+        hold on
+        x(i) = points(population(best_i,i),1);
+        y(i) = points(population(best_i,i),2);
+        end
+        plot(x,y);
     end
-    plot(x,y);
 end
 

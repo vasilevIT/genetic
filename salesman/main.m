@@ -3,8 +3,8 @@ clear all
 
 % Init params
 chromosome_size = 64;
-N = 50; % Quantity points
-max_epoch = 50;
+N = 20; % Quantity points
+max_epoch = 100;
 population_size = 15;
 results = [];
 
@@ -73,7 +73,7 @@ y(i) = points(population(1,i),2);
 end
 plot(x,y);
 
-results(1) = evaluate_population(population, inc_matrix, points);
+results(1) = evaluate_population(population, inc_matrix, points, 1);
 
 
 % Fit
@@ -85,7 +85,7 @@ for k = 1:max_epoch
         new_population(i, :) = new_chromosome;
         
     end
-    results(k+1) = evaluate_population(new_population, inc_matrix, points);
+    results(k+1) = evaluate_population(new_population, inc_matrix, points, k);
     population = new_population;
 %     break;
 end

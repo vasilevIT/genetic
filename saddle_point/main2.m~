@@ -1,7 +1,7 @@
 clc,clear all
 addpath('./..');
 % Quantity epoch
-N= 100;
+N= 500;
 gen_size = 16;
 chromosome_size_a = gen_size * 2;
 chromosome_size_b = gen_size * 4;
@@ -60,9 +60,7 @@ u_mean_a = [];
 u_mean_b = [];
 % calculate
 for epoch = 1:N
-    if (mod(epoch,fix(N/100)) == 0)
-        fprintf('\nEpoch #%d\n', epoch);
-    end
+    if (epoch == fix(N/100))
     population_a_decode = decodePopulation(population_a, gen_size);
     population_b_decode = decodePopulation(population_b, gen_size);
     u_sum = [];

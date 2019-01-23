@@ -32,8 +32,8 @@ while(true)
         u1 = chromosomeGetFloat(l1, chromosome_min_value, chromosome_max_value, fix(chromosome_size/2));
         l2 = chromosomeDecode(z2);
         u2 = chromosomeGetFloat(l2, chromosome_min_value, chromosome_max_value, fix(chromosome_size/2));
-        f_value1 = Fx(f1,u1,u2);
-        f_value2 = Fx(f2,u1,u2);
+        f_value1 = Fuu1(u1,u2);
+        f_value2 = Fuu2(u1,u2);
         f_results(i, :) = [f_value1, f_value2];
     end
     timer_end('calc values for population')
@@ -107,8 +107,8 @@ while(true)
             l2 = chromosomeDecode(z2);
             u2 = chromosomeGetFloat(l2, chromosome_min_value, chromosome_max_value, fix(chromosome_size/2));
 
-            f_value1 = Fx(f1,u1,u2);
-            f_value2 = Fx(f2,u1,u2);
+            f_value1 = Fuu1(u1,u2);
+            f_value2 = Fuu2(u1,u2);
             f_results_childs(i, :) = [f_value1, f_value2];
         end
     end
