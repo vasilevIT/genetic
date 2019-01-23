@@ -1,6 +1,6 @@
 clc,clear all
 % Quantity epoch
-N= 10;
+N= 100;
 M = [5,4,3,2;
     1,4,4,7];
 p_reference = [0.6, 0.4];
@@ -8,16 +8,45 @@ q_reference = [0.2, 0, 0.8, 0];
 u_reference = 3.4;
 p = zeros(2,1);
 p = p + [0.9; 0.1];
+p2 = [0.1; 0.9];
+p3 = [0.4; 0.6];
+p4 = [0.7; 0.3];
 q = zeros(4,1)+1/4;
+q2 = [0.5; 0.2; 0.1; 0.2];
+q3 = [0.4; 0.2; 0.1; 0.3];
+q4 = [0.2; 0.4; 0.3; 0.1];
 u = 0;
 population_size = 20;
-N = 15;
+N = 350;
+k_mutation = 0.95;
 population = [];
 
 disp('Win matrix:');
 disp(M);
 for i = 1:population_size
-   population(i, :) =  [p' q'];
+    temp_q = q;
+    r0 = randi(4);
+    if (r0 == 2)
+        temp_q = q2;
+    end
+    if (r0 == 3)
+        temp_q = q3;
+    end
+    if (r0 == 4)
+        temp_q = q4;
+    end
+    temp_p = p;
+    r0 = randi(4);
+    if (r0 == 2)
+        temp_p = p2;
+    end
+    if (r0 == 3)
+        temp_p = p3;
+    end
+    if (r0 == 4)
+        temp_p = p4;
+    end
+   population(i, :) =  [temp_p' temp_q'];
 end
 
 game_length = 100;
@@ -52,7 +81,7 @@ for epoch = 1:N
         end
         u_sum(i) = ui/game_length;
     end
-    if (mod(epoch, 5) == 0 || epoch < 5)
+    if (mod(epoch, int8(N/5)) == 0 || epoch < 5)
         figure
         title(sprintf('Epoch %d', epoch));
     %     plot(u_sum);
@@ -68,12 +97,12 @@ for epoch = 1:N
         fit_index(i) = 0;
         for j = 1:population_size
            if (i~=j)
-               if (u_sum(i) < u_sum(j))
+               if (u_sum(i) > u_sum(j))
                    fit_index(i) = fit_index(i) + 1;
                end
            end
         end
-        fit_index(i) = 1/(1 + fit_index(i)/population_size)^3;
+        fit_index(i) = 1/(1 + fit_index(i)/population_size)^5;
     end
 
 
@@ -115,29 +144,29 @@ for epoch = 1:N
         end
     %             mutation
         r = rand();
-        if (r>0.9)
+        if (r>k_mutation)
             rni = randperm(2, 2);
             temp = chromosome(rni(1));
             if (chromosome(rni(1)) > chromosome(rni(2)))
-                z = chromosome(rni(1)) / 5;
+                z = chromosome(rni(1)) / 3;
             else 
-                z = chromosome(rni(2)) / 5;
+                z = chromosome(rni(2)) / 3;
             end
             chromosome(rni(1)) = chromosome(rni(2)) + z;
             chromosome(rni(2)) = temp - z;
         end
         
         r = rand();
-        if (r>0.9)
+        if (r>k_mutation)
             rni = randperm(4, 2) + 2;
             temp = chromosome(rni(1));
-            if (chromosome(rni(1)) > chromosome(rni(2)))
+             if (chromosome(rni(1)) > chromosome(rni(2)))
                 z = chromosome(rni(1)) / 4;
-            else 
-                z = chromosome(rni(2)) / 4;
-            end
-            chromosome(rni(1)) = chromosome(rni(2)) + z;
-            chromosome(rni(2)) = temp - z;
+             else 
+                 z = chromosome(rni(2)) / 4;
+             end
+            chromosome(rni(1)) = chromosome(rni(2));
+            chromosome(rni(2)) = temp;
         end
 
         childs(i, :) = chromosome;
@@ -149,7 +178,8 @@ figure
 title('U')
 hold on
 plot(u_mean)
-[C, I] = max(u_sum);
-fprintf('\nU = %f\n', C);
+MEAN = mean(u_sum);
+[C, I] = min(u_sum);
+fprintf('\nU = %f\n', MEAN);
 fprintf('p* = %f\n', population(I,1:2))
 fprintf('q* = %f\n', population(I,3:6))
