@@ -3,9 +3,9 @@ clear all
 
 % Init params
 chromosome_size = 64;
-N = 20; % Quantity points
-max_epoch = 100;
-population_size = 15;
+N = 60; % Quantity points
+max_epoch = 30;
+population_size = 62;
 results = [];
 
 % Gen circle

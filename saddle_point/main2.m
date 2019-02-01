@@ -1,24 +1,24 @@
 clc,clear all
 addpath('./..');
 % Quantity epoch
-N= 100;
+N= 200;
 gen_size = 16;
 chromosome_size_a = gen_size * 2;
 chromosome_size_b = gen_size * 4;
-game_length = 200;
+game_length = 400;
 M = [5,4,3,2;
     1,4,4,7];
 p_reference = [0.6, 0.4];
 q_reference = [0.2, 0, 0.8, 0];
 u_reference = 3.4;
 u = 0;
-population_size = 50;
+population_size = 30;
 k_mutation = 0.95;
 population_a = [];
 population_b = [];
 
 disp('Win matrix:');
-disp(M);
+disp(M);   
 
 % Init population
 for i = 1:population_size 
@@ -60,8 +60,8 @@ u_mean_a = [];
 u_mean_b = [];
 % calculate
 for epoch = 1:N
-    if (mod(epoch,fix(N/100)) == 0)
-        fprintf('\nEpoch #%d\n', epoch);
+    if ((mod(epoch,fix(N/100)) == 0) || (mod(epoch,fix(N/10)) == 0))
+        fprintf('\nEpoch #%d\nU=%f\n', epoch, u);
     end
     population_a_decode = decodePopulation(population_a, gen_size);
     population_b_decode = decodePopulation(population_b, gen_size);
@@ -121,6 +121,7 @@ for epoch = 1:N
     u_mean(epoch) = mean(u_sum);
     u_mean_a(epoch) = mean(u_sum_a);
     u_mean_b(epoch) = mean(u_sum_b);
+    u = (u_mean_a(epoch) + u_mean_b(epoch)) / 2;
 
     for i = 1: population_size
         fit_index_a(i) = 0;
@@ -135,8 +136,8 @@ for epoch = 1:N
                end
            end
         end
-        fit_index_a(i) = 1/(1 + fit_index_a(i)/population_size)^5;
-        fit_index_b(i) = 1/(1 + fit_index_b(i)/population_size)^5;
+        fit_index_a(i) = 1/(1 + fit_index_a(i)/population_size);
+        fit_index_b(i) = 1/(1 + fit_index_b(i)/population_size);
     end
 
 

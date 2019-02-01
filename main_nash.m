@@ -5,15 +5,11 @@ DEBUG_VALUE = true;
 
 timer_start()
 max_epoch = 1500;
-population_size = 50;
+population_size = 100;
 chromosome_size = 64;
 chromosome_min_value = 0;
 chromosome_max_value = 79;
-stop_condition = 0.9;
-f1 = '0.2 * (u1 - 70)^2 + 0.8 * (u2-20)^2';
-f2 = '0.2 * (u1 - 10)^2 + 0.8 * (u2-70)^2';
-f1 = inline(f1);
-f2 = inline(f2);
+stop_condition = 0.95;
 populations = {};
 f_results_full = {};
 population = initPopulation(population_size, chromosome_size);
@@ -71,8 +67,10 @@ while(true)
         parents(i, :) = chromosome;
     end
     timer_end('Form parent list')
-    if ((epoch_index == 1) || (epoch_index >= max_epoch) || accuracy > stop_condition)
-         plot_nash(f_results, fit_index,epoch_index);
+    if ((epoch_index == 1) || (epoch_index >= max_epoch) || accuracy > stop_condition || (mod(epoch_index,fix(max_epoch/10)) == 0))
+%          plot_nash(f_results, fit_index,epoch_index);
+            fprintf('Epoch #%d, elite points %f%%\n', epoch_index, accuracy*100)
+            plot_population(population, epoch_index);
     end
 
     % crossing over
@@ -106,15 +104,9 @@ while(true)
             f_results_childs(i, :) = [f_value1, f_value2];
         end
     end
-    
-    if (epoch_index == 1)
-       % disp(min(f_results))
-       % disp(min(f_results_childs))
-    end
+   
     % check end cycle
     if ((epoch_index >= max_epoch) || (accuracy > stop_condition))
-       % disp(min(f_results))
-        %disp(min(f_results_childs))
         break;
     end
     epoch_index = epoch_index + 1;

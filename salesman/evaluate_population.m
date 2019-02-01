@@ -13,7 +13,7 @@ function [ min_dist ] = evaluate_population( population, inc_matrix, points, epo
 %         fprintf('Path length is %f for %d population item\n', dist, i);
     end
     [C,best_i] = min(dists);
-    fprintf('Min lenfth %f of %d item\n', C, best_i);
+    fprintf('Epoch #%d Min lenfth %f of %d item\n', epoch, C, best_i);
     min_dist = C;
     % plot best path
     x = [];
@@ -21,7 +21,7 @@ function [ min_dist ] = evaluate_population( population, inc_matrix, points, epo
     % first point
     if (mod(epoch, 5) == 0)
         figure
-        title(sprintf('Graph min length %f', C));
+        title(sprintf('Epoch #%d\nGraph min length %f', epoch, C));
         hold on
         plot(points(:, 1), points(:, 2), 'o'); 
         hold on 

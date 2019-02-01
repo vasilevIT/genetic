@@ -28,8 +28,8 @@ function [ fit_index ] = get_nash( f_results, population)
         end
         
 %         Calculating fitness index
-        fit_index_vect(i, 1) = 1/ (1 + (b2(i, 1)/ (N - 1)))^1;
-        fit_index_vect(i, 2) = 1/ (1 + (b2(i, 2)/ (N - 1)))^1;
+        fit_index_vect(i, 1) = 1/ (1 + (b2(i, 1)/ (N - 1)))^4;
+        fit_index_vect(i, 2) = 1/ (1 + (b2(i, 2)/ (N - 1)))^4;
         fit_index(i) = (fit_index_vect(i, 1) + fit_index_vect(i, 2)) / 2;
     end
 
