@@ -3,7 +3,7 @@ function [ chromosome ] = mutation( chromosome , mutation_type)
     if (nargin == 1)
         mutation_type = 'bit';
     end
-    if (randi([1,10]) ~= 5)
+    if (randi([1,25]) ~= 5)
         return;
     end
     if (strcmp(mutation_type, 'bit'))

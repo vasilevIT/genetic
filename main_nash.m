@@ -4,15 +4,12 @@ clear all
 DEBUG_VALUE = true;
 
 timer_start()
+max_epoch = 1500;
 population_size = 100;
 chromosome_size = 64;
 chromosome_min_value = 0;
 chromosome_max_value = 79;
-f1 = '0.2 * (u1 - 70)^2 + 0.8 * (u2-20)^2';
-f2 = '0.2 * (u1 - 10)^2 + 0.8 * (u2-70)^2';
-f1 = inline(f1);
-f2 = inline(f2);
-max_epoch = 200;
+stop_condition = 0.95;
 populations = {};
 f_results_full = {};
 population = initPopulation(population_size, chromosome_size);
@@ -24,6 +21,7 @@ while(true)
     % rating
     timer_start()
     f_results = zeros(population_size, 2);
+    f_vars = zeros(population_size, 2);
     for i = 1:population_size
         z = population(i,:);
         z1 = z(1:fix(chromosome_size/2));
@@ -35,35 +33,27 @@ while(true)
         f_value1 = Fuu1(u1,u2);
         f_value2 = Fuu2(u1,u2);
         f_results(i, :) = [f_value1, f_value2];
+        f_vars(i, :) = [u1, u2];
     end
     timer_end('calc values for population')
-    %{
-    figure 
-    plot(f_results(:,1), f_results(:,2), '.')
-    %}
+
     % calc fit index
     timer_start();
-    fit_index = get_pareto(f_results);
+    fit_index = get_nash(f_results, f_vars);
     f_results_full = [f_results_full, fit_index];
     S = sum(fit_index);
     k = population_size;
     rn = randn(1,k);
     rn = rn + abs(min(rn));
     rn = rn * (S/max(rn));
-    timer_end('calculating pareto set')
+    timer_end('calculating nash set')
     
-    accuracy = sum(fit_index >= 0.95)/size(fit_index, 2);
+    accuracy = sum(fit_index >= 0.9)/size(fit_index, 2);
     
     parents = zeros(k,chromosome_size);
     timer_start();
     for i = 1:size(rn,2)
         k = 0;
-        %{
-        if (b(i) == 0)
-            hold on
-            plot(f_results(i,1),f_results(i,2), 'o')
-        end
-        %}
         rn0 = 0;
         for j = 1:population_size
             k = j;
@@ -77,8 +67,10 @@ while(true)
         parents(i, :) = chromosome;
     end
     timer_end('Form parent list')
-    if ((epoch_index == 1) || (epoch_index >= max_epoch) || accuracy > 0.9)
-         plot_pareto(f_results, fit_index,epoch_index);
+    if ((epoch_index == 1) || (epoch_index >= max_epoch) || accuracy > stop_condition || (mod(epoch_index,fix(max_epoch/10)) == 0))
+%          plot_nash(f_results, fit_index,epoch_index);
+            fprintf('Epoch #%d, elite points %f%%\n', epoch_index, accuracy*100)
+            plot_population(population, epoch_index);
     end
 
     % crossing over
@@ -96,7 +88,7 @@ while(true)
     populations = [populations, population];
 %     get new function value fromm childs
 
-    if (epoch_index == 1 || epoch_index >= max_epoch || accuracy > 0.9)
+    if (epoch_index == 1 || epoch_index >= max_epoch || accuracy > stop_condition)
         f_results_childs = zeros(population_size, 2);
         for i = 1:population_size
             z = population(i,:);
@@ -112,16 +104,11 @@ while(true)
             f_results_childs(i, :) = [f_value1, f_value2];
         end
     end
-    
-    if (epoch_index == 1)
-       % disp(min(f_results))
-       % disp(min(f_results_childs))
-    end
+   
     % check end cycle
-    if ((epoch_index >= max_epoch) || (accuracy > 0.9))
-       % disp(min(f_results))
-        %disp(min(f_results_childs))
+    if ((epoch_index >= max_epoch) || (accuracy > stop_condition))
         break;
     end
     epoch_index = epoch_index + 1;
 end
+disp(f_vars);
