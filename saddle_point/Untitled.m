@@ -1,7 +1,7 @@
 clc,clear all
 addpath('./..');
 % Quantity epoch
-N= 500;
+N= 200;
 gen_size = 16;
 chromosome_size_a = gen_size * 2;
 chromosome_size_b = gen_size * 4;
@@ -68,36 +68,7 @@ for epoch = 1:N
     for i = 1: population_size
         ui = 0;
         ui_a = 0;
-%         Do games with B player
-        ui_b = 0;
-        for k = 1: game_length
-            p1 = rand();
-            q1 = rand(); 
-            ai = 1;
-            ai2 = 2;
-            if (p1 > population_decode(i,1))
-                ai = 2;
-                ai2 = 1;
-            end
-            bi = 1;
-            r0 = 0;
-            for j = 1:4
-                pb = population_decode(i, 2+j);
-                if ((q1 > r0) && (q1 < (r0 + pb)))
-                    bi = j;
-                    break;
-                end
-                r0 = r0 + pb;
-            end
-            u1 = M(ai, bi);
-            u2 = M(ai, bi);
-            ui = ui + (u1 + u2)/2;
-            ui_a = ui_a + u1;
-            ui_b = ui_b + u2;
-        end
-        u_sum(i) = ui/game_length;
-        u_sum_a(i) = ui_a/game_length;
-        u_sum_b(i) = ui_b/game_length;
+        u_sum(i) = population_decode(i, 1:2)*M*population_decode(i, 3:6)';
     end
     
     if (mod(epoch, int8(N/5)) == 0 || epoch < 5)
@@ -124,15 +95,13 @@ for epoch = 1:N
     end
     
     u_mean(epoch) = mean(u_sum);
-    u_mean_a(epoch) = mean(u_sum_a);
-    u_mean_b(epoch) = mean(u_sum_b);
-    u = (u_mean_a(epoch) + u_mean_b(epoch)) / 2;
+    u = mean(u_sum);
 
     for i = 1: population_size
         fit_index(i) = 0;
         for j = 1:population_size
            if (i~=j)
-                if ((u_sum_b(i) > u_sum_b(j)) && (u_sum_a(i) < u_sum_a(j)))
+                if ((u_sum(i) > u_sum(j)))
 %                  if ((u_sum_b(i)<u_sum_b(j)))
                    fit_index(i) = fit_index(i) + 1;
                end
@@ -187,12 +156,9 @@ figure
 title('U')
 hold on
 plot(u_mean)
-MEAN_a = mean(u_sum_a);
-MEAN_b = mean(u_sum_b);
-[C_a, I] = min(u_sum_a);
-[C_b, I_b] = min(u_sum_b);
-fprintf('\nU_a = %f\n', MEAN_a);
-fprintf('U_b = %f\n', MEAN_b);
+MEAN_a = mean(u_sum);
+[C_a, I] = min(u_sum);
+fprintf('\nU = %f\n', MEAN_a);
 population_decode = decodePopulation(population, gen_size);
 fprintf('p* = %f\n', population_decode(I,1:2))
-fprintf('q* = %f\n', population_decode(I_b,3:6))
+fprintf('q* = %f\n', population_decode(I,3:6))
