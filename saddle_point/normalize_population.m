@@ -13,8 +13,11 @@ function [ population_normalize ] = normalize_population( population, gen_size )
         end
 %         normalize
         gens_norm = [];
-        for j = 1:N
-            gens_norm(j) = gens(j)/sum(gens);
+        for j = 1:2
+            gens_norm(j) = gens(j)/sum(gens(1:2));
+        end
+        for j = 3:6
+            gens_norm(j) = gens(j)/sum(gens(3:6));
         end
 %         gens_norm
 %         sum(gens_norm)
